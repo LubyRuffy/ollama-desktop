@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useAppStore } from '../../store';
 import { getModels, generateChatStream, checkOllamaService } from '../../api/ollama';
-import { Setting, Delete, Expand, Service } from '@element-plus/icons-vue';
+import { Setting, Delete } from '@element-plus/icons-vue';
 import { useI18n } from 'vue-i18n';
+import { ElMessageBox } from 'element-plus';
 
 // 导入子组件
 import ChatSidebar from './ChatSidebar.vue';
@@ -102,6 +103,10 @@ async function sendMessage(messageData: { content: string, images?: string[] }) 
     const modelName = store.currentConversation!.modelName || store.currentModel;
     
     // 流式生成回复
+    let accumulatedContent = '';
+    const messageIndex = store.currentConversation!.messages.length - 1;
+    const conversationId = store.currentConversation!.id;
+    
     await generateChatStream({
       model: modelName,
       messages: messages.map(m => ({
@@ -112,12 +117,12 @@ async function sendMessage(messageData: { content: string, images?: string[] }) 
       stream: true,
       options: store.modelParams,
       onUpdate: (content) => {
+        // Accumulate the content
+        accumulatedContent += content;
+        
         // 更新助手消息内容
-        if (store.currentConversation) {
-          const index = store.currentConversation.messages.findIndex(m => m === assistantMessage);
-          if (index !== -1) {
-            store.currentConversation.messages[index].content = content;
-          }
+        if (store.currentConversation && store.currentConversation.id === conversationId) {
+          store.updateMessageContent(conversationId, messageIndex, accumulatedContent);
         }
       }
     });
@@ -301,10 +306,28 @@ function toggleSidebar() {
 
 // 删除当前会话
 function deleteCurrentConversation() {
+  console.log('Delete button clicked');
+  
   if (store.currentConversation) {
-    if (confirm(t('chat.confirmDelete'))) {
-      store.deleteConversation(store.currentConversation.id);
-    }
+    // Use Element Plus confirmation dialog instead of browser's native confirm
+    ElMessageBox.confirm(
+      t('chat.confirmDelete'),
+      t('chat.deleteChat'),
+      {
+        confirmButtonText: t('chat.confirm'),
+        cancelButtonText: t('chat.cancel'),
+        type: 'warning',
+      }
+    )
+      .then(() => {
+        console.log('Deleting conversation with ID:', store.currentConversation?.id);
+        if (store.currentConversation) {
+          store.deleteConversation(store.currentConversation.id);
+        }
+      })
+      .catch(() => {
+        console.log('Deletion cancelled');
+      });
   }
 }
 </script>
@@ -329,17 +352,29 @@ function deleteCurrentConversation() {
         </div>
         
         <div class="header-actions">
-          <button class="header-action" @click="deleteCurrentConversation" v-if="store.currentConversation">
+          <el-button 
+            class="header-action" 
+            v-if="store.currentConversation"
+            @click="deleteCurrentConversation"
+            type="text"
+            size="small"
+          >
             <el-icon><Delete /></el-icon>
-          </button>
-          <button class="header-action" @click="toggleSettings">
+          </el-button>
+          <el-button 
+            class="header-action" 
+            @click="toggleSettings"
+            type="text"
+            size="small"
+          >
             <el-icon><Setting /></el-icon>
-          </button>
+          </el-button>
         </div>
       </div>
       
       <!-- 消息列表 -->
       <ChatMessages 
+        :messages="store.currentConversation ? store.currentConversation.messages : []"
         :is-generating="isGenerating"
         :is-connected="isConnected"
         :connection-error="connectionError"
@@ -429,20 +464,32 @@ function deleteCurrentConversation() {
 }
 
 .header-action {
-  width: 36px;
-  height: 36px;
+  padding: 8px;
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: none;
-  border: none;
   color: var(--text-secondary, #6b7280);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .header-action:hover {
+  background-color: var(--hover-color, #f4f4f5);
+  color: var(--text-color, #111827);
+}
+
+/* Deep selector to override Element Plus button styles */
+:deep(.header-action.el-button) {
+  height: 36px;
+  width: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:deep(.header-action.el-button:hover) {
   background-color: var(--hover-color, #f4f4f5);
   color: var(--text-color, #111827);
 }
@@ -470,6 +517,15 @@ function deleteCurrentConversation() {
 }
 
 [data-theme="dark"] .header-action:hover {
+  background-color: var(--hover-color-dark, #1f2937);
+  color: var(--text-color-dark, #f3f4f6);
+}
+
+[data-theme="dark"] :deep(.header-action.el-button) {
+  color: var(--text-secondary-dark, #9ca3af);
+}
+
+[data-theme="dark"] :deep(.header-action.el-button:hover) {
   background-color: var(--hover-color-dark, #1f2937);
   color: var(--text-color-dark, #f3f4f6);
 }

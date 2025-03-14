@@ -141,8 +141,20 @@ export const useAppStore = defineStore('app', () => {
     return newMessage;
   }
   
+  // 更新消息内容
+  function updateMessageContent(conversationId: string, messageIndex: number, content: string) {
+    const conversation = conversations.value.find(c => c.id === conversationId);
+    if (conversation && conversation.messages[messageIndex]) {
+      conversation.messages[messageIndex].content = content;
+      conversation.updatedAt = Date.now();
+      saveConversations();
+    }
+  }
+  
   // 保存会话到本地存储
   function saveConversations() {
+    // Force reactivity by creating a new array
+    conversations.value = [...conversations.value];
     localStorage.setItem('conversations', JSON.stringify(conversations.value));
   }
   
@@ -164,21 +176,33 @@ export const useAppStore = defineStore('app', () => {
   
   // 删除会话
   function deleteConversation(conversationId: string) {
+    console.log('Store: deleteConversation called with ID:', conversationId);
+    
     const index = conversations.value.findIndex(c => c.id === conversationId);
+    console.log('Store: conversation index:', index);
+    
     if (index !== -1) {
+      console.log('Store: removing conversation from array');
       conversations.value.splice(index, 1);
       
       if (currentConversation.value?.id === conversationId) {
+        console.log('Store: current conversation was deleted');
         // 选择最新的会话（如果有）
         if (conversations.value.length > 0) {
+          console.log('Store: selecting new conversation');
           const sorted = [...conversations.value].sort((a, b) => b.updatedAt - a.updatedAt);
           currentConversation.value = sorted[0];
+          console.log('Store: new current conversation:', currentConversation.value);
         } else {
+          console.log('Store: no conversations left, setting current to null');
           currentConversation.value = null;
         }
       }
       
+      console.log('Store: saving conversations');
       saveConversations();
+    } else {
+      console.log('Store: conversation not found');
     }
   }
   
@@ -336,6 +360,7 @@ export const useAppStore = defineStore('app', () => {
     showSettingsPanel,
     createNewConversation,
     addMessage,
+    updateMessageContent,
     saveConversations,
     loadConversations,
     switchConversation,

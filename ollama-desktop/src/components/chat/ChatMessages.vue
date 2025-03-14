@@ -3,10 +3,10 @@ import { defineProps, defineEmits, ref, watch } from 'vue';
 import { useAppStore } from '../../store';
 import { User, Service, CopyDocument, Delete, RefreshRight, ArrowDown, ArrowUp } from '@element-plus/icons-vue';
 import MarkdownRenderer from './MarkdownRenderer.vue';
-import type { Message } from '../../store';
 import { useI18n } from 'vue-i18n';
 
-const props = defineProps<{
+defineProps<{
+  messages: any[];
   isGenerating: boolean;
   isConnected: boolean;
   connectionError: string | null;

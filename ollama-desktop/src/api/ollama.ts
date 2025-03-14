@@ -120,6 +120,7 @@ export async function generateChatStream(
     const decoder = new TextDecoder();
     let done = false;
     let result = '';
+    let accumulatedChunk = '';
 
     while (!done) {
       const { value, done: doneReading } = await reader.read();
@@ -128,27 +129,52 @@ export async function generateChatStream(
       if (done) break;
 
       const chunk = decoder.decode(value, { stream: true });
+      accumulatedChunk += chunk;
+      
       try {
         // 处理JSON行
-        const lines = chunk.split('\n').filter(line => line.trim() !== '');
+        const lines = accumulatedChunk.split('\n');
+        // Keep the last line which might be incomplete
+        accumulatedChunk = lines.pop() || '';
         
-        for (const line of lines) {
+        for (const line of lines.filter(line => line.trim() !== '')) {
           try {
             const data = JSON.parse(line);
             if (data.message?.content) {
-              result += data.message.content;
-              onUpdate(data.message.content);
+              // Add the new content to the result
+              const newContent = data.message.content;
+              result += newContent;
+              
+              // Call onUpdate with the new content only, not the full result
+              // This allows the UI to properly handle streaming updates
+              onUpdate(newContent);
             }
           } catch (e) {
-            // 如果不是有效的JSON，直接传递内容
+            // If not valid JSON, pass the content directly
             result += line;
             onUpdate(line);
           }
         }
       } catch (e) {
-        // 如果解析失败，直接传递原始块
+        // If parsing fails, pass the raw chunk
         result += chunk;
         onUpdate(chunk);
+      }
+    }
+
+    // Process any remaining content
+    if (accumulatedChunk.trim() !== '') {
+      try {
+        const data = JSON.parse(accumulatedChunk);
+        if (data.message?.content) {
+          const finalContent = data.message.content;
+          result += finalContent;
+          onUpdate(finalContent);
+        }
+      } catch (e) {
+        // If not valid JSON, pass the content directly
+        result += accumulatedChunk;
+        onUpdate(accumulatedChunk);
       }
     }
 

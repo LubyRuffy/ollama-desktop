@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { defineProps, defineEmits, ref, watch } from 'vue';
+import { defineProps, defineEmits } from 'vue';
 import { useAppStore } from '../../store';
 import { useI18n } from 'vue-i18n';
 
-const props = defineProps<{
+defineProps<{
   showSettings: boolean;
 }>();
 

@@ -4,12 +4,12 @@ import 'katex/dist/katex.min.css';
 // 预处理内容，将数学公式标记为特殊标记，以便在 marked 处理后能够识别
 export function preprocessMathContent(content: string): string {
   // 处理块级公式 $$...$$
-  content = content.replace(/\$\$([\s\S]+?)\$\$/g, (match, formula) => {
+  content = content.replace(/\$\$([\s\S]+?)\$\$/g, (_match, formula) => {
     return `\n\`\`\`math-block\n${formula}\n\`\`\`\n`;
   });
   
   // 处理行内公式 $...$，但避免处理货币符号 $123
-  content = content.replace(/\$([^\s][^$]*?[^\s])\$/g, (match, formula) => {
+  content = content.replace(/\$([^\s][^$]*?[^\s])\$/g, (_match, formula) => {
     return `\`math-inline:${formula}\``;
   });
   
@@ -19,7 +19,7 @@ export function preprocessMathContent(content: string): string {
 // 后处理 HTML，将特殊标记转换为 KaTeX 渲染的公式
 export function postprocessMathContent(html: string): string {
   // 处理块级公式
-  html = html.replace(/<pre><code class="hljs language-math-block">([\s\S]+?)<\/code><\/pre>/g, (match, formula) => {
+  html = html.replace(/<pre><code class="hljs language-math-block">([\s\S]+?)<\/code><\/pre>/g, (_match, formula) => {
     try {
       const renderedMath = katex.renderToString(formula.trim(), {
         throwOnError: false,
@@ -34,7 +34,7 @@ export function postprocessMathContent(html: string): string {
   });
   
   // 处理行内公式
-  html = html.replace(/<code>math-inline:([\s\S]+?)<\/code>/g, (match, formula) => {
+  html = html.replace(/<code>math-inline:([\s\S]+?)<\/code>/g, (_match, formula) => {
     try {
       const renderedMath = katex.renderToString(formula.trim(), {
         throwOnError: false,

@@ -1,0 +1,137 @@
+/* Additional styles for thinking process */
+.thinking-process-wrapper {
+  margin: 12px 0;
+  width: 100%;
+  border: none;
+  overflow: hidden;
+}
+
+.thinking-process {
+  background-color: var(--bg-secondary, #f1f5f9);
+  border-radius: 8px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--border-color, #e2e8f0);
+}
+
+.thinking-in-progress {
+  border: 1px solid var(--primary-color, #6366f1) !important;
+  background-color: rgba(99, 102, 241, 0.05);
+}
+
+.thinking-header {
+  padding: 12px 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid transparent;
+  background-color: var(--thinking-header-bg, #edf2f7);
+  position: relative;
+  z-index: 2;
+}
+
+.thinking-header:hover {
+  background-color: var(--thinking-header-hover, #e2e8f0);
+}
+
+.thinking-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary-color, #6366f1);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.thinking-title::before {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z'/%3E%3C/svg%3E");
+  background-size: contain;
+}
+
+.thinking-title::after {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'%3E%3Cpath d='M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z'/%3E%3C/svg%3E");
+  background-size: contain;
+  transition: transform 0.3s ease;
+}
+
+.thinking-process.expanded .thinking-title::after {
+  transform: rotate(180deg);
+}
+
+.thinking-process.expanded .thinking-header {
+  border-bottom-color: var(--border-color, #e2e8f0);
+}
+
+/* Important: These styles are applied when the thinking process is expanded */
+.thinking-process.expanded .thinking-content {
+  height: auto !important;
+  max-height: 500px !important;
+  padding: 16px !important;
+  overflow: auto !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  border-top: 1px solid var(--border-color, #e2e8f0);
+}
+
+.thinking-in-progress .thinking-header {
+  background-color: rgba(99, 102, 241, 0.1);
+}
+
+.thinking-content {
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+  height: 0;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Dark mode styles */
+[data-theme="dark"] .thinking-process {
+  background-color: var(--bg-secondary-dark, #1e293b);
+  border-color: var(--border-color-dark, #334155);
+}
+
+[data-theme="dark"] .thinking-header {
+  background-color: var(--thinking-header-bg-dark, #1e293b);
+  border-color: var(--border-color-dark, #334155);
+}
+
+[data-theme="dark"] .thinking-title {
+  color: var(--primary-color-dark, #818cf8);
+}
+
+[data-theme="dark"] .thinking-title::before,
+[data-theme="dark"] .thinking-title::after {
+  filter: brightness(1.2);
+}
+
+[data-theme="dark"] .thinking-in-progress {
+  border-color: var(--primary-color-dark, #818cf8) !important;
+  background-color: rgba(129, 140, 248, 0.05);
+}
+
+[data-theme="dark"] .thinking-header:hover {
+  background-color: var(--thinking-header-hover-dark, #334155);
+}
+
+[data-theme="dark"] .thinking-process.expanded .thinking-content {
+  border-color: var(--border-color-dark, #334155);
+} 

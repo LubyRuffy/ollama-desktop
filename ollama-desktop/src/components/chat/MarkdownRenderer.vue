@@ -6,8 +6,13 @@ import 'highlight.js/styles/github.css';
 
 // Import modular components
 import { initializeLanguages } from './markdown/languageConfig';
-import { configureMarked, setupCopyCodeButtons, ensureCodeHighlighting } from './markdown/codeHighlighter';
-import { processThinkingContent, forceCollapseAll, handleThinkingClick } from './markdown/thinkingProcess';
+import { setupCopyCodeButtons, ensureCodeHighlighting } from './markdown/codeHighlighter';
+import { 
+  processThinkingContent, 
+  forceCollapseAll, 
+  handleThinkingClick,
+  toggleThinkingProcess
+} from './markdown/thinkingProcess';
 import { 
   renderMathFormulas, 
   extendRendererForMath, 
@@ -53,14 +58,20 @@ const props = defineProps<{
 
 // 预处理内容，然后使用 marked 渲染，最后进行后处理
 const processedContent = computed(() => {
+  // Check if content contains <think> tags
+  const hasThinkingContent = props.content.includes('<think>');
+  
+  if (hasThinkingContent) {
+    // If it has thinking content, process it directly with processThinkingContent
+    return processThinkingContent(props.content);
+  }
+  
+  // For regular content without thinking tags
   // 预处理数学公式
   const preprocessed = preprocessMathContent(props.content);
   
   // 使用 marked 渲染 Markdown
   let html = marked(preprocessed);
-  
-  // 处理思考过程
-  html = processThinkingContent(html);
   
   // 后处理数学公式
   html = postprocessMathContent(html);
@@ -81,6 +92,26 @@ onMounted(() => {
   // Render math formulas
   renderMathFormulas();
   
+  // Add direct click handlers to thinking headers
+  setTimeout(() => {
+    const thinkingHeaders = document.querySelectorAll('.thinking-header');
+    console.log('Found thinking headers:', thinkingHeaders.length);
+    
+    thinkingHeaders.forEach(header => {
+      header.addEventListener('click', (e) => {
+        console.log('Direct click on thinking header');
+        const headerEl = e.currentTarget as HTMLElement;
+        const process = headerEl.closest('.thinking-process') as HTMLElement;
+        const thinkingId = headerEl.getAttribute('data-thinking-id');
+        const content = document.getElementById(`${thinkingId}-content`) as HTMLElement;
+        
+        if (process && content) {
+          toggleThinkingProcess(process, content);
+        }
+      });
+    });
+  }, 100);
+  
   // Add MutationObserver to listen for DOM changes (for streaming output)
   const observer = new MutationObserver((mutations) => {
     let shouldUpdate = false;
@@ -95,6 +126,30 @@ onMounted(() => {
       setupCopyCodeButtons();
       ensureCodeHighlighting();
       renderMathFormulas();
+      
+      // Handle thinking process elements
+      const thinkingHeaders = document.querySelectorAll('.thinking-header');
+      console.log('MutationObserver found thinking headers:', thinkingHeaders.length);
+      
+      thinkingHeaders.forEach(header => {
+        // Remove existing event listeners to avoid duplicates
+        const headerEl = header as HTMLElement;
+        const newHeader = headerEl.cloneNode(true);
+        headerEl.parentNode?.replaceChild(newHeader, headerEl);
+        
+        // Add new event listener
+        newHeader.addEventListener('click', (e) => {
+          console.log('MutationObserver click on thinking header');
+          const headerEl = e.currentTarget as HTMLElement;
+          const process = headerEl.closest('.thinking-process') as HTMLElement;
+          const thinkingId = headerEl.getAttribute('data-thinking-id');
+          const content = document.getElementById(`${thinkingId}-content`) as HTMLElement;
+          
+          if (process && content) {
+            toggleThinkingProcess(process, content);
+          }
+        });
+      });
     }
   });
   
@@ -125,12 +180,44 @@ watch(() => props.content, () => {
     
     // Render math formulas
     renderMathFormulas();
+    
+    // Handle thinking process elements
+    const thinkingHeaders = document.querySelectorAll('.thinking-header');
+    thinkingHeaders.forEach(header => {
+      header.addEventListener('click', (e) => handleThinkingClick(e as MouseEvent));
+    });
   }, 0);
 });
 </script>
 
 <template>
-  <div class="markdown-content" v-html="processedContent" @click="handleThinkingClick"></div>
+  <div 
+    class="markdown-content" 
+    v-html="processedContent" 
+    @click="handleThinkingClick"
+  ></div>
 </template>
 
-<style src="./markdown/markdownStyles.css" scoped></style> 
+<style src="./markdown/markdownStyles.css" scoped></style>
+<style src="./markdown/thinkingStyles.css"></style>
+
+<style>
+/* Add non-scoped styles to ensure thinking process works properly */
+.thinking-process-wrapper {
+  margin: 12px 0;
+  width: 100%;
+}
+
+.thinking-header {
+  cursor: pointer;
+}
+
+.thinking-process.expanded .thinking-content {
+  height: auto !important;
+  max-height: 500px !important;
+  padding: 16px !important;
+  overflow: auto !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+</style> 
