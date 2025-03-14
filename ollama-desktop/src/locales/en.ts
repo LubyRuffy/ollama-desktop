@@ -1,0 +1,53 @@
+export default {
+  settings: {
+    title: 'Settings',
+    theme: 'Theme',
+    lightMode: 'Light Mode',
+    darkMode: 'Dark Mode',
+    systemMode: 'System Mode',
+    model: 'Model',
+    systemPrompt: 'System Prompt',
+    systemPromptPlaceholder: 'Enter system prompt...',
+    contextWindow: 'Context Window Size',
+    temperature: 'Temperature',
+    topP: 'Top P',
+    topK: 'Top K',
+    repeatPenalty: 'Repeat Penalty',
+    language: 'Language',
+    english: 'English',
+    chinese: 'Chinese',
+    systemLanguage: 'System Language'
+  },
+  chat: {
+    newChat: 'New Chat',
+    deleteChat: 'Delete Chat',
+    confirmDelete: 'Are you sure you want to delete this chat?',
+    cancel: 'Cancel',
+    confirm: 'Confirm',
+    send: 'Send',
+    typing: 'AI is typing...',
+    uploadImage: 'Upload Image',
+    inputPlaceholder: 'Type a message...',
+    copy: 'Copy',
+    copied: 'Copied!',
+    regenerate: 'Regenerate',
+    edit: 'Edit',
+    delete: 'Delete',
+    chatList: 'Chat List',
+    connectionFailed: 'Connection failed',
+    connectionFailedDesc: 'Failed to connect to Ollama service. Please check if Ollama is running.',
+    retry: 'Retry',
+    justNow: 'Just now',
+    minutesAgo: '{n} minutes ago',
+    hoursAgo: '{n} hours ago',
+    daysAgo: '{n} days ago',
+    monthDay: '{month}/{day}'
+  },
+  errors: {
+    connectionFailed: 'Connection failed',
+    modelLoadFailed: 'Failed to load model',
+    messageSendFailed: 'Failed to send message',
+    initFailed: 'Initialization failed',
+    titleGenerationFailed: 'Failed to generate title'
+  }
+} 

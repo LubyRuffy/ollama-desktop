@@ -1,0 +1,53 @@
+export default {
+  settings: {
+    title: '设置',
+    theme: '主题',
+    lightMode: '亮色调',
+    darkMode: '暗色调',
+    systemMode: '跟随系统',
+    model: '模型',
+    systemPrompt: '系统提示词',
+    systemPromptPlaceholder: '输入系统提示词...',
+    contextWindow: '上下文窗口大小',
+    temperature: '温度',
+    topP: 'Top P',
+    topK: 'Top K',
+    repeatPenalty: '重复惩罚',
+    language: '语言',
+    english: '英文',
+    chinese: '中文',
+    systemLanguage: '系统语言'
+  },
+  chat: {
+    newChat: '新对话',
+    deleteChat: '删除对话',
+    confirmDelete: '确定要删除这个对话吗？',
+    cancel: '取消',
+    confirm: '确认',
+    send: '发送',
+    typing: 'AI 正在输入...',
+    uploadImage: '上传图片',
+    inputPlaceholder: '输入消息...',
+    copy: '复制',
+    copied: '已复制！',
+    regenerate: '重新生成',
+    edit: '编辑',
+    delete: '删除',
+    chatList: '对话列表',
+    connectionFailed: '连接失败',
+    connectionFailedDesc: '无法连接到 Ollama 服务。请检查 Ollama 是否正在运行。',
+    retry: '重试',
+    justNow: '刚刚',
+    minutesAgo: '{n}分钟前',
+    hoursAgo: '{n}小时前',
+    daysAgo: '{n}天前',
+    monthDay: '{month}月{day}日'
+  },
+  errors: {
+    connectionFailed: '连接失败',
+    modelLoadFailed: '加载模型失败',
+    messageSendFailed: '发送消息失败',
+    initFailed: '初始化失败',
+    titleGenerationFailed: '生成标题失败'
+  }
+} 

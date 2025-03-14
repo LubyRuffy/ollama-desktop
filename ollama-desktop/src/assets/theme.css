@@ -1,0 +1,124 @@
+/* Theme variables */
+:root {
+  /* Light theme (default) */
+  --bg-color: #ffffff;
+  --bg-secondary: #f9fafb;
+  --text-color: #374151;
+  --text-secondary: #6b7280;
+  --heading-color: #111827;
+  --border-color: #e5e7eb;
+  --border-hover: #d1d5db;
+  --hover-color: #f4f4f5;
+  --primary-color: #6366f1;
+  --primary-hover: #4f46e5;
+  --primary-active: #4338ca;
+  --scrollbar-thumb: #d1d5db;
+  --scrollbar-thumb-hover: #9ca3af;
+  --chat-user-bg: #f3f4f6;
+  --chat-assistant-bg: #f0f9ff;
+  --code-bg: #f8fafc;
+  --code-border: #e2e8f0;
+  --shadow-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Dark theme - 更现代化的深色主题 */
+[data-theme="dark"] {
+  /* 主要背景色 - 更深邃的蓝黑色 */
+  --bg-color: #111827;
+  --bg-secondary: #0f172a;
+  
+  /* 文字颜色 - 高对比度 */
+  --text-color: #f9fafb;
+  --text-secondary: #e2e8f0;
+  --heading-color: #ffffff;
+  
+  /* 边框和交互元素 */
+  --border-color: #374151;
+  --border-hover: #4b5563;
+  --hover-color: #1f2937;
+  
+  /* 主色调 - 更鲜艳的蓝紫色 */
+  --primary-color: #8b5cf6;
+  --primary-hover: #7c3aed;
+  --primary-active: #6d28d9;
+  
+  /* 滚动条 */
+  --scrollbar-thumb: #4b5563;
+  --scrollbar-thumb-hover: #6b7280;
+  
+  /* 聊天气泡背景 */
+  --chat-user-bg: #1f2937;
+  --chat-assistant-bg: #312e81;
+  
+  /* 代码区域 */
+  --code-bg: #1e1e2e;
+  --code-border: #2d3748;
+  
+  /* 阴影 */
+  --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Apply theme to body */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}
+
+/* 确保深色模式下所有文本都有足够的对比度 */
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* 确保深色模式下的链接颜色更加明显 */
+[data-theme="dark"] a {
+  color: #a78bfa !important;
+}
+
+/* 确保深色模式下的输入框文本清晰可见 */
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  color: #ffffff !important;
+  background-color: #1f2937 !important;
+  border-color: #374151 !important;
+}
+
+/* 深色模式下的按钮样式增强 */
+[data-theme="dark"] button {
+  background-color: #2d3748;
+  color: #e2e8f0;
+  border-color: #4b5563;
+}
+
+[data-theme="dark"] button:hover {
+  background-color: #374151;
+  border-color: #6b7280;
+}
+
+/* 深色模式下的卡片和容器增强 */
+[data-theme="dark"] .card,
+[data-theme="dark"] .container {
+  background-color: #1f2937;
+  border-color: #374151;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+} 

@@ -1,0 +1,297 @@
+/* Light theme (default) syntax highlighting */
+:root {
+  --hljs-background: #f8fafc;
+  --hljs-text: #383a42;
+  --hljs-comment: #a0a1a7;
+  --hljs-keyword: #a626a4;
+  --hljs-string: #50a14f;
+  --hljs-number: #986801;
+  --hljs-literal: #0184bb;
+  --hljs-title: #4078f2;
+  --hljs-class: #c18401;
+  --hljs-built_in: #c18401;
+  --hljs-property: #4078f2;
+  --hljs-attribute: #50a14f;
+  --hljs-variable: #e45649;
+  --hljs-tag: #e45649;
+  --hljs-section: #4078f2;
+  --hljs-emphasis: #383a42;
+  --hljs-strong: #383a42;
+}
+
+/* Dark theme syntax highlighting - 更现代化的代码高亮 */
+[data-theme="dark"] {
+  /* 基础颜色 */
+  --hljs-background: #1e1e2e;  /* 更深邃的背景色，类似VSCode深色主题 */
+  --hljs-text: #f8f8f2;        /* 更柔和的白色文本 */
+  
+  /* 语法元素 */
+  --hljs-comment: #a78bfa;     /* 紫色注释 */
+  --hljs-keyword: #ff79c6;     /* 粉红色关键字 */
+  --hljs-string: #f1fa8c;      /* 黄色字符串 */
+  --hljs-number: #bd93f9;      /* 紫色数字 */
+  --hljs-literal: #8be9fd;     /* 青色字面量 */
+  --hljs-title: #50fa7b;       /* 绿色函数名 */
+  --hljs-class: #ffb86c;       /* 橙色类名 */
+  --hljs-built_in: #8be9fd;    /* 青色内置函数 */
+  --hljs-property: #50fa7b;    /* 绿色属性 */
+  --hljs-attribute: #50fa7b;   /* 绿色属性 */
+  --hljs-variable: #ff79c6;    /* 粉红色变量 */
+  --hljs-tag: #ff79c6;         /* 粉红色标签 */
+  --hljs-section: #bd93f9;     /* 紫色章节 */
+  --hljs-emphasis: #f8f8f2;    /* 强调 */
+  --hljs-strong: #f8f8f2;      /* 加粗 */
+}
+
+/* Override highlight.js styles */
+.hljs {
+  background: var(--hljs-background);
+  color: var(--hljs-text);
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: var(--hljs-comment);
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag {
+  color: var(--hljs-keyword);
+  font-weight: bold;
+}
+
+.hljs-string,
+.hljs-regexp,
+.hljs-addition {
+  color: var(--hljs-string);
+}
+
+.hljs-number,
+.hljs-meta {
+  color: var(--hljs-number);
+}
+
+.hljs-literal,
+.hljs-doctag,
+.hljs-meta-string {
+  color: var(--hljs-literal);
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-name {
+  color: var(--hljs-title);
+  font-weight: bold;
+}
+
+.hljs-title.class_,
+.hljs-type {
+  color: var(--hljs-class);
+}
+
+.hljs-built_in,
+.hljs-builtin-name {
+  color: var(--hljs-built_in);
+  font-weight: bold;
+}
+
+.hljs-attr,
+.hljs-attribute {
+  color: var(--hljs-attribute);
+}
+
+.hljs-variable,
+.hljs-template-variable {
+  color: var(--hljs-variable);
+}
+
+.hljs-tag,
+.hljs-selector-id,
+.hljs-selector-class {
+  color: var(--hljs-tag);
+}
+
+.hljs-emphasis {
+  font-style: italic;
+  color: var(--hljs-emphasis);
+}
+
+.hljs-strong {
+  font-weight: bold;
+  color: var(--hljs-strong);
+}
+
+/* Code block styling */
+pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1em;
+  border-radius: 8px; /* 更大的圆角 */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* 添加阴影 */
+}
+
+code.hljs {
+  padding: 3px 5px;
+  border-radius: 4px;
+}
+
+/* Dark theme specific overrides for code blocks */
+[data-theme="dark"] pre,
+[data-theme="dark"] code {
+  background-color: var(--hljs-background);
+  border-color: var(--code-border, #2d3748);
+}
+
+[data-theme="dark"] .code-header {
+  background-color: #252540; /* 稍微亮一点的标题栏 */
+  border-color: var(--code-border, #2d3748);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+/* 增加深色模式下代码块内文本的可见性 */
+[data-theme="dark"] pre code {
+  color: var(--hljs-text);
+}
+
+/* 增加深色模式下代码语言标签的可见性 */
+[data-theme="dark"] .code-language {
+  color: var(--hljs-title);
+  font-weight: 500;
+}
+
+/* 确保深色模式下的行内代码清晰可见 */
+[data-theme="dark"] :not(pre) > code {
+  background-color: #2d3748 !important;
+  color: var(--hljs-text) !important;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* 确保深色模式下的代码块内所有文本都清晰可见 */
+[data-theme="dark"] .hljs * {
+  color: inherit;
+}
+
+/* 代码复制按钮样式 */
+[data-theme="dark"] .copy-code-button {
+  background-color: #2d3748;
+  color: #e2e8f0;
+  border: 1px solid #4b5563;
+  border-radius: 4px;
+  padding: 4px 8px;
+  transition: all 0.2s ease;
+}
+
+[data-theme="dark"] .copy-code-button:hover {
+  background-color: #374151;
+  color: #ffffff;
+  border-color: #6b7280;
+}
+
+[data-theme="dark"] .copy-code-button.copied {
+  background-color: #8b5cf6;
+  color: #ffffff;
+  border-color: #7c3aed;
+}
+
+/* 深色模式下增强所有语言的语法高亮 */
+[data-theme="dark"] .hljs-keyword,
+[data-theme="dark"] .hljs-selector-tag {
+  color: var(--hljs-keyword) !important;
+  font-weight: bold;
+  text-shadow: 0 0 1px rgba(255, 121, 198, 0.3);
+}
+
+[data-theme="dark"] .hljs-string,
+[data-theme="dark"] .hljs-regexp,
+[data-theme="dark"] .hljs-addition {
+  color: var(--hljs-string) !important;
+  font-weight: 500;
+  text-shadow: 0 0 1px rgba(241, 250, 140, 0.3);
+}
+
+[data-theme="dark"] .hljs-title,
+[data-theme="dark"] .hljs-section,
+[data-theme="dark"] .hljs-name,
+[data-theme="dark"] .hljs-title.function_ {
+  color: var(--hljs-title) !important;
+  font-weight: bold;
+  text-shadow: 0 0 1px rgba(80, 250, 123, 0.3);
+}
+
+[data-theme="dark"] .hljs-built_in,
+[data-theme="dark"] .hljs-builtin-name {
+  color: var(--hljs-built_in) !important;
+  font-weight: bold;
+  text-shadow: 0 0 1px rgba(139, 233, 253, 0.3);
+}
+
+[data-theme="dark"] .hljs-comment,
+[data-theme="dark"] .hljs-quote {
+  color: var(--hljs-comment) !important;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+[data-theme="dark"] .hljs-variable,
+[data-theme="dark"] .hljs-template-variable,
+[data-theme="dark"] .hljs-tag,
+[data-theme="dark"] .hljs-name,
+[data-theme="dark"] .hljs-selector-id,
+[data-theme="dark"] .hljs-selector-class,
+[data-theme="dark"] .hljs-regexp,
+[data-theme="dark"] .hljs-deletion {
+  color: var(--hljs-variable) !important;
+  font-weight: 500;
+  text-shadow: 0 0 1px rgba(255, 121, 198, 0.3);
+}
+
+[data-theme="dark"] .hljs-number,
+[data-theme="dark"] .hljs-meta {
+  color: var(--hljs-number) !important;
+  text-shadow: 0 0 1px rgba(189, 147, 249, 0.3);
+}
+
+[data-theme="dark"] .hljs-literal,
+[data-theme="dark"] .hljs-doctag,
+[data-theme="dark"] .hljs-meta-string {
+  color: var(--hljs-literal) !important;
+  text-shadow: 0 0 1px rgba(139, 233, 253, 0.3);
+}
+
+[data-theme="dark"] .hljs-title.class_,
+[data-theme="dark"] .hljs-type {
+  color: var(--hljs-class) !important;
+  text-shadow: 0 0 1px rgba(255, 184, 108, 0.3);
+}
+
+[data-theme="dark"] .hljs-attr,
+[data-theme="dark"] .hljs-attribute {
+  color: var(--hljs-attribute) !important;
+  text-shadow: 0 0 1px rgba(80, 250, 123, 0.3);
+}
+
+[data-theme="dark"] .hljs-params {
+  color: var(--hljs-class) !important;
+  text-shadow: 0 0 1px rgba(255, 184, 108, 0.3);
+}
+
+/* 深色模式下的代码块增强 */
+[data-theme="dark"] pre {
+  background-color: var(--hljs-background) !important;
+  border: 1px solid #30363d !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="dark"] pre code {
+  color: var(--hljs-text) !important;
+  background-color: var(--hljs-background) !important;
+}
+
+[data-theme="dark"] pre .code-header {
+  background-color: #252540 !important;
+  border-bottom: 1px solid #30363d !important;
+} 
