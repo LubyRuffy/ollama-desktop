@@ -3,9 +3,12 @@ import { addLanguageLabels } from './codeHighlighter';
 
 // Toggle thinking process visibility
 export function toggleThinkingProcess(process: HTMLElement, content: HTMLElement) {
-  console.log('Toggling thinking process', process, content);
+  // 精简日志，只在调试时需要时再打开
+  // console.log('Toggling thinking process', process, content);
   const isExpanded = process.classList.contains('expanded');
+  const isInProgress = process.getAttribute('data-in-progress') === 'true';
   
+  // 只保留状态变化的日志，简化输出
   if (isExpanded) {
     // Collapse
     process.classList.remove('expanded');
@@ -15,7 +18,7 @@ export function toggleThinkingProcess(process: HTMLElement, content: HTMLElement
     content.style.overflow = 'hidden';
     content.style.opacity = '0';
     content.style.visibility = 'hidden';
-    console.log('Collapsed thinking process');
+    // console.log('Collapsed thinking process');
   } else {
     // Expand
     process.classList.add('expanded');
@@ -26,7 +29,7 @@ export function toggleThinkingProcess(process: HTMLElement, content: HTMLElement
     content.style.opacity = '1';
     content.style.visibility = 'visible';
     content.style.borderTop = '1px solid var(--border-color, #e2e8f0)';
-    console.log('Expanded thinking process');
+    // console.log('Expanded thinking process');
   }
   
   // Enable transition effect
@@ -65,44 +68,31 @@ export function forceCollapseAll() {
 // Create thinking process HTML
 export function createThinkingProcessHTML(thinkingId: string, content: string, inProgress: boolean = false) {
   const title = inProgress ? '思考中...' : '思考过程';
-  const processClass = inProgress ? 'thinking-process thinking-in-progress' : 'thinking-process';
+  const processClass = inProgress ? 'thinking-process thinking-in-progress-process' : 'thinking-process';
+  const dataInProgress = inProgress ? 'data-in-progress="true"' : '';
+  
+  // Always start collapsed, regardless of whether it's in progress
+  const contentStyles = "height:0;max-height:0;padding:0;overflow:hidden;opacity:0;visibility:hidden;transition:all 0.3s ease;";
   
   return `
     <div class="thinking-process-wrapper" id="${thinkingId}">
-      <div class="${processClass}">
-        <div class="thinking-header" data-thinking-id="${thinkingId}" onclick="(function(e) { 
-          const process = e.currentTarget.closest('.thinking-process');
-          const content = document.getElementById('${thinkingId}-content');
-          if (process && content) {
-            if (process.classList.contains('expanded')) {
-              process.classList.remove('expanded');
-              content.style.height = '0';
-              content.style.maxHeight = '0';
-              content.style.padding = '0';
-              content.style.overflow = 'hidden';
-              content.style.opacity = '0';
-              content.style.visibility = 'hidden';
-            } else {
-              process.classList.add('expanded');
-              content.style.height = 'auto';
-              content.style.maxHeight = '500px';
-              content.style.padding = '16px';
-              content.style.overflow = 'auto';
-              content.style.opacity = '1';
-              content.style.visibility = 'visible';
-              content.style.borderTop = '1px solid var(--border-color, #e2e8f0)';
-            }
-          }
-        })(event)">
+      <div class="${processClass}" ${dataInProgress}>
+        <div class="thinking-header" data-thinking-id="${thinkingId}" data-action="toggle-thinking">
           <span class="thinking-title">${title}</span>
         </div>
-        <div class="thinking-content" id="${thinkingId}-content" style="height:0;max-height:0;padding:0;overflow:hidden;opacity:0;visibility:hidden;transition:all 0.3s ease;">
+        <div class="thinking-content" id="${thinkingId}-content" style="${contentStyles}">
           ${addLanguageLabels(marked(content))}
         </div>
       </div>
     </div>
   `;
 }
+
+// 用于跟踪已创建的思考过程元素的映射
+const createdThinkingProcesses = new Map<string, string>();
+
+// 使用一个固定的前缀，确保同一会话中的思考过程ID保持一致
+const SESSION_ID = `session-${Date.now()}`;
 
 // Process content with thinking tags
 export function processThinkingContent(content: string) {
@@ -112,7 +102,8 @@ export function processThinkingContent(content: string) {
     return addLanguageLabels(html);
   }
   
-  console.log('Processing thinking content:', content);
+  // 只保留关键日志，移除详细内容
+  // console.log('Processing thinking content:', content);
   
   // Generate a unique message ID to distinguish thinking processes in different messages
   const messageId = `msg-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
@@ -126,7 +117,8 @@ export function processThinkingContent(content: string) {
   
   // Split content by <think> and </think> tags
   const parts = content.split(/(<think>|<\/think>)/g);
-  console.log('Split parts:', parts);
+  // 移除详细的数组内容打印，避免大量日志
+  // console.log('Split parts:', parts);
   
   for (let i = 0; i < parts.length; i++) {
     const part = parts[i];
@@ -151,6 +143,8 @@ export function processThinkingContent(content: string) {
       // Process thinking content
       if (thinkingContent) {
         const thinkingId = `${messageId}-thinking-${thinkingCount}`;
+        // 简化日志，不打印详细ID
+        // console.log('Creating thinking process HTML for completed thinking:', thinkingId);
         result += createThinkingProcessHTML(thinkingId, thinkingContent);
         thinkingContent = '';
       }
@@ -172,38 +166,57 @@ export function processThinkingContent(content: string) {
   // If thinking mode didn't end properly, handle unclosed thinking content
   if (inThinkingMode && thinkingContent) {
     const thinkingId = `${messageId}-thinking-${thinkingCount}`;
+    // Mark as in progress
+    // 简化日志，只保留关键信息
+    // console.log('Creating thinking process HTML for in-progress thinking:', thinkingId);
+    
+    // Add a special class to make it more noticeable during streaming
+    result += `<div class="thinking-process-streaming-wrapper">`;
     result += createThinkingProcessHTML(thinkingId, thinkingContent, true);
+    result += `</div>`;
   }
   
-  console.log('Processed result:', result);
+  // 移除详细的结果打印，避免大量HTML输出到控制台
+  // console.log('Processed result:', result);
   return result;
 }
 
 // Handle click events for thinking process
 export function handleThinkingClick(e: MouseEvent) {
-  console.log('Thinking click event triggered', e);
+  // 简化日志，移除事件对象打印
+  // console.log('Thinking click event triggered', e);
   const target = e.target as HTMLElement;
   
   // Check if the clicked element is a thinking header or its child
   const header = target.closest('.thinking-header');
   
   if (header) {
-    console.log('Found thinking header:', header);
+    // 简化日志，不打印DOM元素
+    // console.log('Found thinking header:', header);
     const process = header.closest('.thinking-process') as HTMLElement;
-    const contentId = header.getAttribute('data-thinking-id') + '-content';
-    const content = document.getElementById(contentId) as HTMLElement;
+    const thinkingId = header.getAttribute('data-thinking-id');
     
-    console.log('Process element:', process);
-    console.log('Content element:', content);
+    if (!thinkingId) {
+      console.log('No thinking ID found');
+      return;
+    }
+    
+    const content = document.getElementById(`${thinkingId}-content`) as HTMLElement;
+    
+    // 移除冗余的DOM元素打印
+    // console.log('Process element:', process);
+    // console.log('Content element:', content);
     
     if (process && content) {
-      console.log('Toggling thinking process');
+      // 简化日志
+      // console.log('Toggling thinking process');
       toggleThinkingProcess(process, content);
     } else {
       console.log('Could not find process or content element');
     }
   } else {
-    console.log('No thinking header found in click path');
+    // 移除不必要的日志
+    // console.log('No thinking header found in click path');
   }
 }
 

@@ -30,6 +30,7 @@
   background-color: var(--thinking-header-bg, #edf2f7);
   position: relative;
   z-index: 2;
+  transition: background-color 0.2s ease;
 }
 
 .thinking-header:hover {
@@ -85,6 +86,11 @@
 
 .thinking-in-progress .thinking-header {
   background-color: rgba(99, 102, 241, 0.1);
+}
+
+/* Add a more prominent hover effect for in-progress thinking headers */
+.thinking-in-progress .thinking-header:hover {
+  background-color: rgba(99, 102, 241, 0.2);
 }
 
 .thinking-content {
